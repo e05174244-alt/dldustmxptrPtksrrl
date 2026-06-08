@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인연 한월 스텟계산기</title>
-    <!-- OCR  Tesseract.js  -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        /* 프리텐다드 폰트  */
+        /* 프리텐다드 폰트 로드 */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-        /* 🎨 기본: 하늘색 + 화이트톤 라이트 */
+        /* 🎨 기본: 화사한 하늘색 + 화이트톤 라이트 테마 */
         :root { 
             --bg-color: #f0f9ff; 
             --panel-bg: #ffffff; 
@@ -29,7 +28,7 @@
             --input-bg: #ffffff;
         }
 
-        /* 🌙 다크 모드 적용 변수 */
+        /* 🌙 다크 모드 적용 시 변경될 색상 변수 */
         :root.dark-theme {
             --bg-color: #02040a; 
             --panel-bg: #0f172a; 
@@ -54,7 +53,7 @@
         .top-nav button { background: rgba(2, 132, 199, 0.08); border: 1px solid var(--highlight); color: var(--highlight); padding: 6px 16px; border-radius: 6px; font-size: 0.9em; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: inherit; }
         .top-nav button:hover { background: var(--highlight); color: white; box-shadow: 0 0 10px rgba(2, 132, 199, 0.3); }
         
-        /* 다크모드/라이트모드 토글 버튼  */
+        /* 다크모드/라이트모드 토글 버튼 전용 스타일 */
         .btn-theme { border-color: var(--text-sub) !important; color: var(--text-sub) !important; background: transparent !important; }
         .btn-theme:hover { background: var(--text-sub) !important; color: var(--panel-bg) !important; }
         
@@ -63,6 +62,7 @@
         .main-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 30px; align-items: start; }
         .left-col { display: flex; flex-direction: column; gap: 20px; }
         
+        /* 우측 패널 (하단 여백 삭제 유지) */
         .right-col { position: sticky; top: 20px; display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 40px); overflow-y: auto; padding-right: 5px; }
         
         .right-col::-webkit-scrollbar { width: 8px; } .right-col::-webkit-scrollbar-thumb { background-color: var(--highlight); border-radius: 4px; }
@@ -179,7 +179,7 @@
         @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-col { position: relative; top: 0; max-height: none; overflow-y: visible; } .pill-grid { grid-template-columns: repeat(2, 1fr); } .equip-slot { flex-direction: column; align-items: stretch; } .equip-options { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .results-grid { grid-template-columns: 1fr; } .amulet-slot { flex-direction: column; align-items: stretch; } .slot-label { width: 100%; margin-bottom: 5px; } }
 
-        /* 플로팅 메뉴  */
+        /* 🔥 이모티콘 전용 작은 원형 플로팅 메뉴 디자인 */
         .floating-menu {
             position: fixed;
             bottom: 30px;
@@ -238,10 +238,10 @@
 </head>
 <body>
 <div class="container">
-    <!-- 타이틀 텍스트 수정 -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; padding-top: 10px;">
-        <div style="display: flex; align-items: center;">
+        <div style="display: flex; align-items: baseline; gap: 10px;">
             <h1 style="margin: 0; color: var(--highlight); font-size: 1.8rem; letter-spacing: 1px;">인연 한월스텟계산기</h1>
+            <span style="font-size: 0.9rem; color: var(--text-sub); font-weight: 600;">by nebosuke_</span>
         </div>
         <div class="top-nav" style="margin-bottom: 0;">
             <button class="btn-theme" id="themeToggleBtnTop" onclick="toggleTheme()">🌙 다크 모드</button>
@@ -251,7 +251,6 @@
     </div>
 
     <div class="main-layout">
-        <!-- 좌측: 입력 패널 -->
         <div class="left-col">
             <div class="header">
                 <div class="level-input-group">
@@ -283,13 +282,12 @@
                     <div class="stat-controls"><input type="number" id="lukInput" class="stat-input" value="0" min="0"><div class="btn-group"><button onclick="addStat('luk', -100)">- 100</button><button onclick="addStat('luk', -10)">- 10</button><button onclick="addStat('luk', -1)">- 1</button><button onclick="addStat('luk', 1)">+ 1</button><button onclick="addStat('luk', 10)">+ 10</button><button onclick="addStat('luk', 100)">+ 100</button></div></div>
                 </div>
                 <div style="text-align: right; display: flex; justify-content: flex-end; gap: 10px;">
-                    <button class="reset-btn" onclick="doOptimize('boss')" style="background: rgba(2, 132, 199, 0.1); border-color: var(--highlight); color: var(--highlight);">⚔️ 보스셋 추천</button>
-                    <button class="reset-btn" onclick="doOptimize('hunt')" style="background: rgba(5, 150, 105, 0.1); border-color: #059669; color: #059669;">💰 사냥셋 추천</button>
-                    <button class="reset-btn" onclick="resetStats()" style="background: rgba(239, 68, 68, 0.1); border-color: var(--alert); color: var(--alert);">스텟 초기화</button>
+                    <button class="reset-btn" onclick="doOptimize('boss')" style="background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; color: #3b82f6;">⚔️ 보스셋 추천</button>
+                    <button class="reset-btn" onclick="doOptimize('hunt')" style="background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #4ade80;">💰 사냥셋 추천</button>
+                    <button class="reset-btn" onclick="resetStats()" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444;">스텟 초기화</button>
                 </div>
             </div>
 
-            <!-- 단전 시스템 -->
             <div class="stat-board">
                 <h3 class="section-title">
                     <span>단전</span>
@@ -317,7 +315,6 @@
             <div class="stat-board"><h3 class="section-title">영단</h3><div class="pill-grid" id="pillGrid"></div></div>
         </div>
 
-        <!-- 우측: 결과/수동기입 패널 -->
         <div class="right-col">
             <div class="results-panel">
                 <div class="results-header-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -326,7 +323,7 @@
                 </div>
                 <div class="results-content">
                     
-                    <div style="background: linear-gradient(135deg, var(--highlight), var(--primary-hover)); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);">
+                    <div style="background: linear-gradient(135deg, var(--highlight), var(--primary-hover)); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);">
                         <div style="font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px;">전투력</div>
                         <div id="resCP" style="font-size: 2.5rem; font-weight: 900; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.2); line-height: 1;">0</div>
                     </div>
@@ -355,7 +352,6 @@
                         <div class="result-item"><span class="result-label">물약 회복량(%)</span><div class="edit-box"><input type="number" id="resPotion" class="res-input"><span>%</span></div></div>
                         <div class="result-item"><span class="result-label">저항(%)</span><div class="edit-box"><input type="number" id="resResist" class="res-input"><span>%</span></div></div>
                         
-                        <!-- 🔥 스킬속도(%) 칸 복원 -->
                         <div class="result-item"><span class="result-label">스킬속도(%)</span><div class="edit-box"><input type="number" id="resSkillSpd" class="res-input"><span>%</span></div></div>
                         <div class="result-item" style="display: none;"></div>
                     </div>
@@ -365,7 +361,6 @@
     </div>
 </div>
 
-<!-- 🔥 플로팅 메뉴 -->
 <div class="floating-menu">
     <button class="float-btn theme" id="themeToggleBtnFloat" onclick="toggleTheme()">🌙<span class="tooltip">다크 모드</span></button>
     <button class="float-btn ocr" onclick="openOcrModal()">📷<span class="tooltip">스크린샷 인식</span></button>
@@ -373,7 +368,6 @@
     <button class="float-btn up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆️<span class="tooltip">위로 가기</span></button>
 </div>
 
-<!-- 💾 저장/불러오기 모달 -->
 <div id="saveModal" class="popup-backdrop">
   <div class="popup-box" style="max-width:460px;overflow:hidden">
     <button class="popup-close" onclick="closeSaveModal()">×</button>
@@ -382,13 +376,11 @@
       <span class="save-modal-title">저장 관리</span>
     </div>
     <div class="save-modal-body">
-      <!-- 프리셋 슬롯 -->
       <div class="save-group">
         <div class="save-group-label">프리셋 슬롯</div>
         <div style="display:grid;gap:6px" id="presetSlots"></div>
         <button onclick="resetAllPresets()" class="danger" style="padding:9px;font-size:11px;font-weight:800;border-radius:9px;margin-top:2px">🗑️ 프리셋 전체 초기화</button>
       </div>
-      <!-- 파일 저장/불러오기 -->
       <div class="save-group">
         <div class="save-group-label">파일</div>
         <div class="save-action-grid">
@@ -397,7 +389,6 @@
         </div>
         <input type="file" id="fileLoadInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
       </div>
-      <!-- 코드 복사/붙여넣기 -->
       <div class="save-group">
         <div class="save-group-label">프로필 코드</div>
         <div class="save-action-grid">
@@ -409,7 +400,6 @@
   </div>
 </div>
 
-<!-- 📷 OCR 자동 인식 모달 -->
 <div id="ocrModal" class="popup-backdrop">
   <div class="popup-box" style="max-width:500px;">
     <button class="popup-close" onclick="closeOcrModal()">×</button>
@@ -438,7 +428,7 @@
 
 <script>
     // ═══════════════════════════════════════════════
-    // 테마 변경 스크립트
+    // 테마 변경 스크립트 (아이콘 변경 대응)
     // ═══════════════════════════════════════════════
     function toggleTheme() {
         const root = document.documentElement;
@@ -469,7 +459,7 @@
     });
 
     // ═══════════════════════════════════════════════
-    // ⬇️ 자바스크립트 ⬇️
+    // ⬇️ 에러 해결된 완벽 작동 JS (결과값 누적 델타 로직)
     // ═══════════════════════════════════════════════
     const POINTS_PER_LEVEL = 5;
     const DANJEON_THRESHOLDS = [{lv:0,pts:1},{lv:30,pts:1},{lv:60,pts:3},{lv:90,pts:5},{lv:120,pts:7},{lv:150,pts:9},{lv:180,pts:11},{lv:200,pts:13}];
@@ -478,6 +468,7 @@
     
     window.ManualInputs = {}; 
     window.AnchorL = { str:0, agi:0, vit:0, luk:0, top:0, mid:0, bot:0 }; 
+    window.SystemAnchor = null; // 🔥 수동입력/OCR 시점의 장비,영단 스텟을 기억할 변수
 
     const wEnhanceData=[{f:0,p:0,s:0},{f:3,p:0,s:0},{f:6,p:0,s:0},{f:9,p:0,s:1},{f:12,p:0,s:1},{f:15,p:0,s:1},{f:18,p:0,s:2},{f:21,p:0,s:2},{f:24,p:0,s:2},{f:27,p:0,s:3},{f:30,p:1,s:3},{f:33,p:1,s:3},{f:36,p:1,s:4},{f:39,p:1,s:4},{f:42,p:1,s:4},{f:45,p:2,s:5},{f:48,p:3,s:5},{f:51,p:3,s:5},{f:54,p:3,s:6},{f:57,p:3,s:6},{f:60,p:4,s:7}];
     const aEnhanceData=[{f:0,p:0,e:0},{f:1,p:0,e:0},{f:2,p:0,e:0},{f:3,p:1,e:0},{f:5,p:1,e:0},{f:7,p:1,e:0},{f:9,p:2,e:0},{f:12,p:2,e:0},{f:15,p:2,e:0},{f:18,p:3,e:0},{f:22,p:3,e:1},{f:26,p:3,e:1},{f:30,p:4,e:1},{f:35,p:4,e:1},{f:40,p:4,e:1},{f:45,p:5,e:1},{f:51,p:5,e:1},{f:57,p:5,e:1},{f:63,p:6,e:1},{f:70,p:6,e:1},{f:77,p:7,e:2}];
@@ -537,13 +528,15 @@
         document.getElementById('levelInput').addEventListener('change', calculateAll);
         ['strInput', 'agiInput', 'vitInput', 'lukInput', 'topDanInput', 'midDanInput', 'botDanInput'].forEach(id => { document.getElementById(id).addEventListener('change', calculateAll); });
 
-        // 입력칸을 절대적인 기준점으로 저장
+        // 🔥 입력칸을 절대적인 기준점(Base)으로 저장
         document.querySelectorAll('.res-input').forEach(el => {
             el.addEventListener('change', function() {
                 this.classList.add('is-manual');
                 window.ManualInputs[this.id] = parseFloat(this.value) || 0;
                 
-                // 입력 당시의 좌측 스텟 패널 상태 저장
+                // OCR 또는 수동입력 시점의 장비/영단 상태 캡처
+                window.SystemAnchor = getSystemStats();
+                
                 window.AnchorL.str = parseInt(document.getElementById('strInput').value) || 0;
                 window.AnchorL.agi = parseInt(document.getElementById('agiInput').value) || 0;
                 window.AnchorL.vit = parseInt(document.getElementById('vitInput').value) || 0;
@@ -566,6 +559,7 @@
 
     function clearManual() {
         window.ManualInputs = {}; window.AnchorL = { str:0, agi:0, vit:0, luk:0, top:0, mid:0, bot:0 };
+        window.SystemAnchor = null; // 초기화
         document.querySelectorAll('.res-input.is-manual').forEach(el => { el.classList.remove('is-manual'); el.value = ''; });
         calculateAll();
     }
@@ -600,7 +594,7 @@
         const data = {
             level: document.getElementById('levelInput').value,
             stats: { str: document.getElementById('strInput').value, agi: document.getElementById('agiInput').value, vit: document.getElementById('vitInput').value, luk: document.getElementById('lukInput').value, topDan: document.getElementById('topDanInput').value, midDan: document.getElementById('midDanInput').value, botDan: document.getElementById('botDanInput').value },
-            equipment: {}, amulets: {}, pills: {}, stands: {}, overrides: window.ManualInputs, anchor: window.AnchorL
+            equipment: {}, amulets: {}, pills: {}, stands: {}, overrides: window.ManualInputs, anchor: window.AnchorL, systemAnchor: window.SystemAnchor
         };
         EQUIP_SLOT_NAMES.forEach(slot => {
             let isAcc = ['neck', 'ring1', 'ring2', 'ear'].includes(slot);
@@ -640,6 +634,7 @@
         if (data.overrides) {
             window.ManualInputs = data.overrides || {};
             window.AnchorL = data.anchor || { str:0, agi:0, vit:0, luk:0, top:0, mid:0, bot:0 };
+            window.SystemAnchor = data.systemAnchor || null;
             Object.keys(window.ManualInputs).forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('is-manual');
@@ -786,6 +781,9 @@
             count++;
         });
 
+        // 🔥 장비 누적 계산을 위해 OCR 시점의 순수 시스템 스텟(기본+장비+영단) 캡처
+        window.SystemAnchor = getSystemStats();
+
         // 앵커 스냅샷 찍기
         window.AnchorL.str = parseInt(document.getElementById('strInput').value) || 0;
         window.AnchorL.agi = parseInt(document.getElementById('agiInput').value) || 0;
@@ -895,76 +893,78 @@
 
     function getFinalStats(CurrentL) {
         let G = getSystemStats(); 
+        let S = window.SystemAnchor || G; // 🔥 입력 시점 장비가 없으면 현재 장비를 베이스로 삼음 (차이 0)
         
         let f = {};
-        let B = {}; // BASE
+        let B = {}; // 절대적인 베이스라인
         
-        B.resStrPct = window.ManualInputs.resStrPct !== undefined ? window.ManualInputs.resStrPct : G.strPct;
-        B.resAgiPct = window.ManualInputs.resAgiPct !== undefined ? window.ManualInputs.resAgiPct : G.agiPct;
-        B.resVitPct = window.ManualInputs.resVitPct !== undefined ? window.ManualInputs.resVitPct : G.vitPct;
-        B.resLukPct = window.ManualInputs.resLukPct !== undefined ? window.ManualInputs.resLukPct : G.lukPct;
+        // 🔥 입력된 수동 값 + (현재 장비 스텟 - 수동입력 당시의 장비 스텟)
+        B.resStrPct = window.ManualInputs.resStrPct !== undefined ? window.ManualInputs.resStrPct + (G.strPct - S.strPct) : G.strPct;
+        B.resAgiPct = window.ManualInputs.resAgiPct !== undefined ? window.ManualInputs.resAgiPct + (G.agiPct - S.agiPct) : G.agiPct;
+        B.resVitPct = window.ManualInputs.resVitPct !== undefined ? window.ManualInputs.resVitPct + (G.vitPct - S.vitPct) : G.vitPct;
+        B.resLukPct = window.ManualInputs.resLukPct !== undefined ? window.ManualInputs.resLukPct + (G.lukPct - S.lukPct) : G.lukPct;
         
         f.resStrPct = B.resStrPct; f.resAgiPct = B.resAgiPct; f.resVitPct = B.resVitPct; f.resLukPct = B.resLukPct;
 
         let A = window.AnchorL;
         let dStr = CurrentL.str - A.str; let dAgi = CurrentL.agi - A.agi; let dVit = CurrentL.vit - A.vit; let dLuk = CurrentL.luk - A.luk; 
 
-        B.resStrFlat = window.ManualInputs.resStrFlat !== undefined ? window.ManualInputs.resStrFlat : (G.strFlat * (1 + f.resStrPct/100));
+        B.resStrFlat = window.ManualInputs.resStrFlat !== undefined ? window.ManualInputs.resStrFlat + (G.strFlat - S.strFlat) : (G.strFlat * (1 + f.resStrPct/100));
         f.resStrFlat = (statRaw(B.resStrFlat, f.resStrPct) + dStr) * (1 + f.resStrPct/100);
 
-        B.resAgiFlat = window.ManualInputs.resAgiFlat !== undefined ? window.ManualInputs.resAgiFlat : (G.agiFlat * (1 + f.resAgiPct/100));
+        B.resAgiFlat = window.ManualInputs.resAgiFlat !== undefined ? window.ManualInputs.resAgiFlat + (G.agiFlat - S.agiFlat) : (G.agiFlat * (1 + f.resAgiPct/100));
         f.resAgiFlat = (statRaw(B.resAgiFlat, f.resAgiPct) + dAgi) * (1 + f.resAgiPct/100);
 
-        B.resVitFlat = window.ManualInputs.resVitFlat !== undefined ? window.ManualInputs.resVitFlat : (G.vitFlat * (1 + f.resVitPct/100));
+        B.resVitFlat = window.ManualInputs.resVitFlat !== undefined ? window.ManualInputs.resVitFlat + (G.vitFlat - S.vitFlat) : (G.vitFlat * (1 + f.resVitPct/100));
         f.resVitFlat = (statRaw(B.resVitFlat, f.resVitPct) + dVit) * (1 + f.resVitPct/100);
 
-        B.resLukFlat = window.ManualInputs.resLukFlat !== undefined ? window.ManualInputs.resLukFlat : (G.lukFlat * (1 + f.resLukPct/100));
+        B.resLukFlat = window.ManualInputs.resLukFlat !== undefined ? window.ManualInputs.resLukFlat + (G.lukFlat - S.lukFlat) : (G.lukFlat * (1 + f.resLukPct/100));
         f.resLukFlat = (statRaw(B.resLukFlat, f.resLukPct) + dLuk) * (1 + f.resLukPct/100);
 
         let dMid = CurrentL.mid - A.mid; let dTop = CurrentL.top - A.top; let dBot = CurrentL.bot - A.bot;
         let gainAgi = f.resAgiFlat - B.resAgiFlat;
 
-        B.resAtkPct = window.ManualInputs.resAtkPct !== undefined ? window.ManualInputs.resAtkPct : (G.atkPct + (B.resAgiFlat * 0.3));
+        B.resAtkPct = window.ManualInputs.resAtkPct !== undefined ? window.ManualInputs.resAtkPct + (G.atkPct - S.atkPct) : (G.atkPct + (B.resAgiFlat * 0.3));
         f.resAtkPct = B.resAtkPct + (gainAgi * 0.3) + (dMid * 1);
 
-        B.resHpPct = window.ManualInputs.resHpPct !== undefined ? window.ManualInputs.resHpPct : G.hpPct;
+        B.resHpPct = window.ManualInputs.resHpPct !== undefined ? window.ManualInputs.resHpPct + (G.hpPct - S.hpPct) : G.hpPct;
         f.resHpPct = B.resHpPct + (dTop * 3);
 
         let gainStr = f.resStrFlat - B.resStrFlat;
-        B.resAtkFlat = window.ManualInputs.resAtkFlat !== undefined ? window.ManualInputs.resAtkFlat : ((G.atkFlat + B.resStrFlat) * (1 + B.resAtkPct/100));
+        B.resAtkFlat = window.ManualInputs.resAtkFlat !== undefined ? window.ManualInputs.resAtkFlat + (G.atkFlat - S.atkFlat) : ((G.atkFlat + B.resStrFlat) * (1 + B.resAtkPct/100));
         f.resAtkFlat = (statRaw(B.resAtkFlat, B.resAtkPct) + gainStr * 1) * (1 + f.resAtkPct/100);
 
         let gainVit = f.resVitFlat - B.resVitFlat;
-        B.resHpFlat = window.ManualInputs.resHpFlat !== undefined ? window.ManualInputs.resHpFlat : ((G.hpFlat + B.resVitFlat * 5) * (1 + B.resHpPct/100));
+        B.resHpFlat = window.ManualInputs.resHpFlat !== undefined ? window.ManualInputs.resHpFlat + (G.hpFlat - S.hpFlat) : ((G.hpFlat + B.resVitFlat * 5) * (1 + B.resHpPct/100));
         f.resHpFlat = (statRaw(B.resHpFlat, B.resHpPct) + gainVit * 5) * (1 + f.resHpPct/100);
 
         let gainLuk = f.resLukFlat - B.resLukFlat;
 
-        B.resCritRate = window.ManualInputs.resCritRate !== undefined ? window.ManualInputs.resCritRate : (G.critRate + B.resAgiFlat * 0.05);
+        B.resCritRate = window.ManualInputs.resCritRate !== undefined ? window.ManualInputs.resCritRate + (G.critRate - S.critRate) : (G.critRate + B.resAgiFlat * 0.05);
         f.resCritRate = B.resCritRate + (gainAgi * 0.05);
 
-        B.resCritDmg = window.ManualInputs.resCritDmg !== undefined ? window.ManualInputs.resCritDmg : (G.critDmg + B.resStrFlat * 0.1);
+        B.resCritDmg = window.ManualInputs.resCritDmg !== undefined ? window.ManualInputs.resCritDmg + (G.critDmg - S.critDmg) : (G.critDmg + B.resStrFlat * 0.1);
         f.resCritDmg = B.resCritDmg + (gainStr * 0.1);
 
-        B.resEvasion = window.ManualInputs.resEvasion !== undefined ? window.ManualInputs.resEvasion : (G.evasion + B.resVitFlat * 0.03);
+        B.resEvasion = window.ManualInputs.resEvasion !== undefined ? window.ManualInputs.resEvasion + (G.evasion - S.evasion) : (G.evasion + B.resVitFlat * 0.03);
         f.resEvasion = B.resEvasion + (gainVit * 0.03);
 
-        B.resPotion = window.ManualInputs.resPotion !== undefined ? window.ManualInputs.resPotion : (G.potion + B.resVitFlat * 0.5);
+        B.resPotion = window.ManualInputs.resPotion !== undefined ? window.ManualInputs.resPotion + (G.potion - S.potion) : (G.potion + B.resVitFlat * 0.5);
         f.resPotion = B.resPotion + (gainVit * 0.5);
 
-        B.resExp = window.ManualInputs.resExp !== undefined ? window.ManualInputs.resExp : (G.exp + B.resLukFlat * 0.2);
+        B.resExp = window.ManualInputs.resExp !== undefined ? window.ManualInputs.resExp + (G.exp - S.exp) : (G.exp + B.resLukFlat * 0.2);
         f.resExp = B.resExp + (gainLuk * 0.2) + (dBot * 0.5);
 
-        B.resDrop = window.ManualInputs.resDrop !== undefined ? window.ManualInputs.resDrop : (G.drop + B.resLukFlat * 0.2);
+        B.resDrop = window.ManualInputs.resDrop !== undefined ? window.ManualInputs.resDrop + (G.drop - S.drop) : (G.drop + B.resLukFlat * 0.2);
         f.resDrop = B.resDrop + (gainLuk * 0.2) + (dBot * 1.5);
 
-        B.resResist = window.ManualInputs.resResist !== undefined ? window.ManualInputs.resResist : G.resist;
+        B.resResist = window.ManualInputs.resResist !== undefined ? window.ManualInputs.resResist + (G.resist - S.resist) : G.resist;
         f.resResist = B.resResist + (dTop * 1);
 
-        f.resBossDmg = window.ManualInputs.resBossDmg !== undefined ? window.ManualInputs.resBossDmg : G.bossDmg;
-        f.resFinalAtk = window.ManualInputs.resFinalAtk !== undefined ? window.ManualInputs.resFinalAtk : G.finalAtk;
-        f.resSkillDmg = window.ManualInputs.resSkillDmg !== undefined ? window.ManualInputs.resSkillDmg : G.skillDmg;
-        f.resSkillSpd = window.ManualInputs.resSkillSpd !== undefined ? window.ManualInputs.resSkillSpd : G.skillSpd;
+        f.resBossDmg = window.ManualInputs.resBossDmg !== undefined ? window.ManualInputs.resBossDmg + (G.bossDmg - S.bossDmg) : G.bossDmg;
+        f.resFinalAtk = window.ManualInputs.resFinalAtk !== undefined ? window.ManualInputs.resFinalAtk + (G.finalAtk - S.finalAtk) : G.finalAtk;
+        f.resSkillDmg = window.ManualInputs.resSkillDmg !== undefined ? window.ManualInputs.resSkillDmg + (G.skillDmg - S.skillDmg) : G.skillDmg;
+        f.resSkillSpd = window.ManualInputs.resSkillSpd !== undefined ? window.ManualInputs.resSkillSpd + (G.skillSpd - S.skillSpd) : G.skillSpd;
 
         f.cp = f.resAtkFlat * 10 + f.resHpFlat * 0.5 + f.resCritRate * 20 + f.resCritDmg * 10 + f.resPotion * 10 + f.resSkillDmg * 40 + f.resFinalAtk * 40 + f.resBossDmg * 40 + f.resSkillSpd * 40 + f.resEvasion * 40;
         return f;
@@ -1054,6 +1054,8 @@
         fieldNames.forEach(id => {
             let el = document.getElementById(id);
             if (!el) return;
+            
+            // 🔥 수동 입력된 값은 입력칸에 직접적으로 표시
             if (document.activeElement !== el) el.value = Number(Math.round(curr[id] + 'e2') + 'e-2');
         });
 
