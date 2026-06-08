@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인연 한월 스텟계산기</title>
-    <!-- OCR을 위한 Tesseract.js 로드 -->
+    <!-- OCR  Tesseract.js  -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        /* 프리텐다드 폰트 로드 */
+        /* 프리텐다드 폰트  */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-        /* 🎨 기본: 화사한 하늘색 + 화이트톤 라이트 테마 */
+        /* 🎨 기본: 하늘색 + 화이트톤 라이트 */
         :root { 
             --bg-color: #f0f9ff; 
             --panel-bg: #ffffff; 
@@ -29,7 +29,7 @@
             --input-bg: #ffffff;
         }
 
-        /* 🌙 다크 모드 적용 시 변경될 색상 변수 */
+        /* 🌙 다크 모드 적용 변수 */
         :root.dark-theme {
             --bg-color: #02040a; 
             --panel-bg: #0f172a; 
@@ -54,7 +54,7 @@
         .top-nav button { background: rgba(2, 132, 199, 0.08); border: 1px solid var(--highlight); color: var(--highlight); padding: 6px 16px; border-radius: 6px; font-size: 0.9em; font-weight: bold; cursor: pointer; transition: 0.2s; font-family: inherit; }
         .top-nav button:hover { background: var(--highlight); color: white; box-shadow: 0 0 10px rgba(2, 132, 199, 0.3); }
         
-        /* 다크모드/라이트모드 토글 버튼 전용 스타일 */
+        /* 다크모드/라이트모드 토글 버튼  */
         .btn-theme { border-color: var(--text-sub) !important; color: var(--text-sub) !important; background: transparent !important; }
         .btn-theme:hover { background: var(--text-sub) !important; color: var(--panel-bg) !important; }
         
@@ -179,7 +179,7 @@
         @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-col { position: relative; top: 0; max-height: none; overflow-y: visible; } .pill-grid { grid-template-columns: repeat(2, 1fr); } .equip-slot { flex-direction: column; align-items: stretch; } .equip-options { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .results-grid { grid-template-columns: 1fr; } .amulet-slot { flex-direction: column; align-items: stretch; } .slot-label { width: 100%; margin-bottom: 5px; } }
 
-        /* 🔥 이모티콘 전용 작은 원형 플로팅 메뉴 디자인 */
+        /* 플로팅 메뉴  */
         .floating-menu {
             position: fixed;
             bottom: 30px;
@@ -238,7 +238,7 @@
 </head>
 <body>
 <div class="container">
-    <!-- 🔥 변경됨: 로고 이미지 제거, 타이틀 텍스트 수정 -->
+    <!-- 타이틀 텍스트 수정 -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; padding-top: 10px;">
         <div style="display: flex; align-items: center;">
             <h1 style="margin: 0; color: var(--highlight); font-size: 1.8rem; letter-spacing: 1px;">인연 한월스텟계산기</h1>
@@ -355,7 +355,7 @@
                         <div class="result-item"><span class="result-label">물약 회복량(%)</span><div class="edit-box"><input type="number" id="resPotion" class="res-input"><span>%</span></div></div>
                         <div class="result-item"><span class="result-label">저항(%)</span><div class="edit-box"><input type="number" id="resResist" class="res-input"><span>%</span></div></div>
                         
-                        <!-- 🔥 스킬속도(%) 칸 완벽 복원 -->
+                        <!-- 🔥 스킬속도(%) 칸 복원 -->
                         <div class="result-item"><span class="result-label">스킬속도(%)</span><div class="edit-box"><input type="number" id="resSkillSpd" class="res-input"><span>%</span></div></div>
                         <div class="result-item" style="display: none;"></div>
                     </div>
@@ -469,7 +469,7 @@
     });
 
     // ═══════════════════════════════════════════════
-    // ⬇️ 에러 해결된 100% 원본 스텟계.html 자바스크립트 ⬇️
+    // ⬇️ 자바스크립트 ⬇️
     // ═══════════════════════════════════════════════
     const POINTS_PER_LEVEL = 5;
     const DANJEON_THRESHOLDS = [{lv:0,pts:1},{lv:30,pts:1},{lv:60,pts:3},{lv:90,pts:5},{lv:120,pts:7},{lv:150,pts:9},{lv:180,pts:11},{lv:200,pts:13}];
@@ -537,7 +537,7 @@
         document.getElementById('levelInput').addEventListener('change', calculateAll);
         ['strInput', 'agiInput', 'vitInput', 'lukInput', 'topDanInput', 'midDanInput', 'botDanInput'].forEach(id => { document.getElementById(id).addEventListener('change', calculateAll); });
 
-        // 🔥 입력칸을 절대적인 기준점(Base)으로 저장
+        // 입력칸을 절대적인 기준점으로 저장
         document.querySelectorAll('.res-input').forEach(el => {
             el.addEventListener('change', function() {
                 this.classList.add('is-manual');
@@ -897,7 +897,7 @@
         let G = getSystemStats(); 
         
         let f = {};
-        let B = {}; // 절대적인 베이스라인
+        let B = {}; // BASE
         
         B.resStrPct = window.ManualInputs.resStrPct !== undefined ? window.ManualInputs.resStrPct : G.strPct;
         B.resAgiPct = window.ManualInputs.resAgiPct !== undefined ? window.ManualInputs.resAgiPct : G.agiPct;
