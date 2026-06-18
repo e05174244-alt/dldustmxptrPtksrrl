@@ -10,7 +10,7 @@
         /* 프리텐다드 폰트 로드 */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-        /* 🎨 기본: 화사한 하늘색 + 화이트톤 라이트 테마 */
+        /* 🎨 기본: 하늘색 + 화이트톤 라이트 테마 */
         :root { 
             --bg-color: #f0f9ff; 
             --panel-bg: #ffffff; 
@@ -275,7 +275,7 @@
             </div>
 
             <div class="stat-board">
-                <h3 class="section-title">기본 스텟 투자</h3>
+                <h3 class="section-title">스텟 분배</h3>
                 <div class="stat-row">
                     <div class="stat-info"><div class="stat-name">힘 <span id="gain_str" class="cp-gain-badge"></span></div><div class="stat-desc">공격력 1, 치명타 공격력 0.1% 상승</div></div>
                     <div class="stat-controls"><input type="number" id="strInput" class="stat-input" value="0" min="0"><div class="btn-group"><button onclick="addStat('str', -100)">- 100</button><button onclick="addStat('str', -10)">- 10</button><button onclick="addStat('str', -1)">- 1</button><button onclick="addStat('str', 1)">+ 1</button><button onclick="addStat('str', 10)">+ 10</button><button onclick="addStat('str', 100)">+ 100</button></div></div>
@@ -531,7 +531,7 @@
     window.AnchorL = { str:0, agi:0, vit:0, luk:0, top:0, mid:0, bot:0 }; 
     window.SystemAnchor = null; 
 
-    // 🔥 조절 버튼 함수 추가 완료 (우측 패널 + / - 누르면 정상 동작)
+    //  조절 버튼 함수 (우측 패널 + / - 누르면 정상 동작)
     window.adjVal = function(id, amount) {
         const el = document.getElementById(id);
         if(!el) return;
@@ -878,7 +878,7 @@
 
         calculateAll();
         closeOcrModal();
-        alert(`${count}개 항목이 스텟표에 적용 및 고정되었습니다!`);
+        alert(`${count}개 항목이 스텟표에 적용 되었습니다!`);
     }
 
     function statRaw(display, pctVal) {
