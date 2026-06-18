@@ -1147,3 +1147,27 @@
         fieldNames.forEach(id => {
             let el = document.getElementById(id);
             if (!el) return;
+            if (document.activeElement !== el) {
+                el.value = Number(Math.round(curr[id] + 'e2') + 'e-2');
+            }
+        });
+
+        calcCPOnly();
+
+        const getDisplayPct = (id) => parseFloat(document.getElementById(id).value) || curr[id] || 0;
+        const gStr = 1 * (1 + (getDisplayPct('resStrPct')) / 100); 
+        const gAgi = 1 * (1 + (getDisplayPct('resAgiPct')) / 100); 
+        const gVit = 1 * (1 + (getDisplayPct('resVitPct')) / 100); 
+        const gLuk = 1 * (1 + (getDisplayPct('resLukPct')) / 100);
+
+        const setBadgeText = (id, text) => { const el = document.getElementById(id); if(el) el.innerText = text; }
+        setBadgeText('gain_str', `예상: 1pt당 최종 힘 +${(Math.round(gStr * 100) / 100).toFixed(2)}`); 
+        setBadgeText('gain_agi', `예상: 1pt당 최종 민첩 +${(Math.round(gAgi * 100) / 100).toFixed(2)}`); 
+        setBadgeText('gain_vit', `예상: 1pt당 최종 생명력 +${(Math.round(gVit * 100) / 100).toFixed(2)}`); 
+        setBadgeText('gain_luk', `예상: 1pt당 최종 행운 +${(Math.round(gLuk * 100) / 100).toFixed(2)}`);
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
