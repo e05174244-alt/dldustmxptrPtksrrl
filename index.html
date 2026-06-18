@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인연 한월 스텟계산기</title>
+    <!-- OCR을 위한 Tesseract.js 로드 -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        /* 프리텐다드 폰트 로드 */
+        /* 프리텐다드 폰트  */
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 
-        /* 🎨 기본: 화사한 하늘색 + 화이트톤 라이트 테마 */
+        /*  기본: 하늘색 + 라이트 테마 */
         :root { 
             --bg-color: #f0f9ff; 
             --panel-bg: #ffffff; 
@@ -28,7 +29,7 @@
             --input-bg: #ffffff;
         }
 
-        /* 🌙 다크 모드 적용 시 변경될 색상 변수 */
+        /* 다크 모드 적용 시 변경될 색상  */
         :root.dark-theme {
             --bg-color: #02040a; 
             --panel-bg: #0f172a; 
@@ -62,10 +63,9 @@
         .main-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 30px; align-items: start; }
         .left-col { display: flex; flex-direction: column; gap: 20px; }
         
-        /* 우측 패널 (하단 여백 삭제 유지) */
         .right-col { position: sticky; top: 20px; display: flex; flex-direction: column; gap: 20px; max-height: calc(100vh - 40px); overflow-y: auto; padding-right: 5px; }
-        
         .right-col::-webkit-scrollbar { width: 8px; } .right-col::-webkit-scrollbar-thumb { background-color: var(--highlight); border-radius: 4px; }
+        
         .header, .stat-board, .results-panel { background-color: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.3); transition: background-color 0.3s, border-color 0.3s; }
         .results-panel { padding: 0; overflow: hidden; }
         .results-header-title { position: relative; background-color: var(--panel-bg); color: var(--highlight); text-align: center; padding: 15px; margin: 0; font-size: 1.3em; font-weight: bold; border-bottom: 2px solid var(--border-color); letter-spacing: 1px; transition: background-color 0.3s; }
@@ -118,15 +118,25 @@
         .opt-row select { flex: 1; padding: 6px; font-size: 0.9em; color: var(--text-main); }
         .opt-row input { width: 55px; padding: 6px; font-size: 0.95em; text-align: center; color: var(--text-main); font-weight: bold; }
         
-        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; border: none; background: transparent; }
+        /*  버튼 추가 그리드 조정*/
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; border: none; background: transparent; }
         .result-item { background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 8px; position: relative; overflow: hidden; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         .result-item::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--border-color); transition: background 0.2s; border-radius: 4px 0 0 4px; }
         .result-item:hover { border-color: var(--highlight); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(2, 132, 199, 0.1); }
         .result-item:hover::before { background: var(--highlight); }
         
         .result-label { color: var(--text-sub); font-size: 0.85rem; font-weight: 800; width: 100%; display: block; letter-spacing: -0.3px; }
-        .edit-box { display: flex; align-items: center; justify-content: flex-end; gap: 6px; width: 100%; }
-        .res-input { background: var(--btn-bg); border: 1px solid var(--border-color); color: var(--highlight); font-size: 1.15rem; font-weight: 900; text-align: right; width: 100%; padding: 6px 8px; border-radius: 6px; outline: none; transition: all 0.2s; font-family: inherit; }
+        .edit-box { display: flex; align-items: center; justify-content: flex-end; gap: 4px; width: 100%; }
+        
+        /* 스텟 조절용 커스텀 버튼 추가 */
+        .res-adj-btn {
+            background: var(--btn-bg); border: 1px solid var(--border-color); color: var(--text-sub);
+            border-radius: 6px; width: 26px; height: 28px; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; font-weight: bold; transition: 0.2s; padding: 0; font-size: 1rem;
+        }
+        .res-adj-btn:hover { background: var(--highlight); color: white; border-color: var(--highlight); }
+
+        .res-input { background: var(--btn-bg); border: 1px solid var(--border-color); color: var(--highlight); font-size: 1.15rem; font-weight: 900; text-align: center; width: 65px; padding: 4px 2px; border-radius: 6px; outline: none; transition: all 0.2s; font-family: inherit; }
         .res-input:hover, .res-input:focus { border-color: var(--highlight); background: var(--panel-bg); box-shadow: 0 0 0 3px var(--focus-ring); color: var(--primary-hover); }
         .res-input.is-manual { border-color: var(--chanran); color: var(--chanran); background: rgba(217, 119, 6, 0.05); }
         .edit-box span { color: var(--text-main); font-weight: 800; font-size: 1rem; }
@@ -179,7 +189,7 @@
         @media (max-width: 1200px) { .main-layout { grid-template-columns: 1fr; } .right-col { position: relative; top: 0; max-height: none; overflow-y: visible; } .pill-grid { grid-template-columns: repeat(2, 1fr); } .equip-slot { flex-direction: column; align-items: stretch; } .equip-options { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .results-grid { grid-template-columns: 1fr; } .amulet-slot { flex-direction: column; align-items: stretch; } .slot-label { width: 100%; margin-bottom: 5px; } }
 
-        /* 🔥 이모티콘 전용 작은 원형 플로팅 메뉴 디자인 */
+        /* 원형 플로팅 메뉴 */
         .floating-menu {
             position: fixed;
             bottom: 30px;
@@ -209,7 +219,6 @@
         .float-btn:hover {
             transform: scale(1.1);
         }
-        /* 마우스 오버 시 나타나는 툴팁 */
         .float-btn .tooltip {
             position: absolute;
             right: 60px;
@@ -251,6 +260,7 @@
     </div>
 
     <div class="main-layout">
+        <!-- 좌측: 입력 패널 -->
         <div class="left-col">
             <div class="header">
                 <div class="level-input-group">
@@ -282,9 +292,9 @@
                     <div class="stat-controls"><input type="number" id="lukInput" class="stat-input" value="0" min="0"><div class="btn-group"><button onclick="addStat('luk', -100)">- 100</button><button onclick="addStat('luk', -10)">- 10</button><button onclick="addStat('luk', -1)">- 1</button><button onclick="addStat('luk', 1)">+ 1</button><button onclick="addStat('luk', 10)">+ 10</button><button onclick="addStat('luk', 100)">+ 100</button></div></div>
                 </div>
                 <div style="text-align: right; display: flex; justify-content: flex-end; gap: 10px;">
-                    <button class="reset-btn" onclick="doOptimize('boss')" style="background: rgba(59, 130, 246, 0.1); border-color: #3b82f6; color: #3b82f6;">⚔️ 보스셋 추천</button>
-                    <button class="reset-btn" onclick="doOptimize('hunt')" style="background: rgba(74, 222, 128, 0.1); border-color: #4ade80; color: #4ade80;">💰 사냥셋 추천</button>
-                    <button class="reset-btn" onclick="resetStats()" style="background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444;">스텟 초기화</button>
+                    <button class="reset-btn" onclick="doOptimize('boss')" style="background: rgba(2, 132, 199, 0.1); border-color: var(--highlight); color: var(--highlight);">⚔️ 보스셋 추천</button>
+                    <button class="reset-btn" onclick="doOptimize('hunt')" style="background: rgba(5, 150, 105, 0.1); border-color: #059669; color: #059669;">💰 사냥셋 추천</button>
+                    <button class="reset-btn" onclick="resetStats()" style="background: rgba(239, 68, 68, 0.1); border-color: var(--alert); color: var(--alert);">스텟 초기화</button>
                 </div>
             </div>
 
@@ -315,6 +325,7 @@
             <div class="stat-board"><h3 class="section-title">영단</h3><div class="pill-grid" id="pillGrid"></div></div>
         </div>
 
+        <!-- 우측: 결과/수동기입 패널 -->
         <div class="right-col">
             <div class="results-panel">
                 <div class="results-header-title" style="display:flex; justify-content:space-between; align-items:center;">
@@ -323,37 +334,86 @@
                 </div>
                 <div class="results-content">
                     
-                    <div style="background: linear-gradient(135deg, var(--highlight), var(--primary-hover)); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);">
+                    <div style="background: linear-gradient(135deg, var(--highlight), var(--primary-hover)); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 20px; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3);">
                         <div style="font-size: 1.1rem; font-weight: 700; color: rgba(255,255,255,0.9); margin-bottom: 8px;">전투력</div>
                         <div id="resCP" style="font-size: 2.5rem; font-weight: 900; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.2); line-height: 1;">0</div>
+                        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-top: 5px;">💡 수치 옆 [+][-] 버튼 사용시 Shift+클릭하면 10씩 조정됩니다.</div>
                     </div>
 
+                    <!-- 🔥 증감 버튼이 적용된 스텟표 -->
                     <div class="results-grid">
-                        <div class="result-item"><span class="result-label">공격력 (최종)</span><div class="edit-box"><input type="number" id="resAtkFlat" class="res-input"></div></div>
-                        <div class="result-item"><span class="result-label">공격력(%)</span><div class="edit-box"><input type="number" id="resAtkPct" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">체력 (최종)</span><div class="edit-box"><input type="number" id="resHpFlat" class="res-input"></div></div>
-                        <div class="result-item"><span class="result-label">체력(%)</span><div class="edit-box"><input type="number" id="resHpPct" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">힘</span><div class="edit-box"><input type="number" id="resStrFlat" class="res-input"></div></div>
-                        <div class="result-item"><span class="result-label">힘(%)</span><div class="edit-box"><input type="number" id="resStrPct" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">민첩</span><div class="edit-box"><input type="number" id="resAgiFlat" class="res-input"></div></div>
-                        <div class="result-item"><span class="result-label">민첩(%)</span><div class="edit-box"><input type="number" id="resAgiPct" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">생명력</span><div class="edit-box"><input type="number" id="resVitFlat" class="res-input"></div></div>
-                        <div class="result-item"><span class="result-label">생명력(%)</span><div class="edit-box"><input type="number" id="resVitPct" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">행운</span><div class="edit-box"><input type="number" id="resLukFlat" class="res-input"></div></div>
-                        <div class="result-item"><span class="result-label">행운(%)</span><div class="edit-box"><input type="number" id="resLukPct" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">스킬 피해량(%)</span><div class="edit-box"><input type="number" id="resSkillDmg" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">최종 공격력(%)</span><div class="edit-box"><input type="number" id="resFinalAtk" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">치명타 확률(%)</span><div class="edit-box"><input type="number" id="resCritRate" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">치명타 공격력(%)</span><div class="edit-box"><input type="number" id="resCritDmg" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">경험치 획득량(%)</span><div class="edit-box"><input type="number" id="resExp" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">보스 공격력(%)</span><div class="edit-box"><input type="number" id="resBossDmg" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">드랍률(%)</span><div class="edit-box"><input type="number" id="resDrop" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">회피(%)</span><div class="edit-box"><input type="number" id="resEvasion" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">물약 회복량(%)</span><div class="edit-box"><input type="number" id="resPotion" class="res-input"><span>%</span></div></div>
-                        <div class="result-item"><span class="result-label">저항(%)</span><div class="edit-box"><input type="number" id="resResist" class="res-input"><span>%</span></div></div>
+                        <!-- 플랫 스텟들 (기본형) -->
+                        <div class="result-item"><span class="result-label">공격력 (최종)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resAtkFlat', -1)">-</button><input type="number" id="resAtkFlat" class="res-input"><button class="res-adj-btn" onclick="adjVal('resAtkFlat', 1)">+</button></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">공격력(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resAtkPct', -1)">-</button><input type="number" id="resAtkPct" class="res-input"><button class="res-adj-btn" onclick="adjVal('resAtkPct', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">체력 (최종)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resHpFlat', -1)">-</button><input type="number" id="resHpFlat" class="res-input"><button class="res-adj-btn" onclick="adjVal('resHpFlat', 1)">+</button></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">체력(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resHpPct', -1)">-</button><input type="number" id="resHpPct" class="res-input"><button class="res-adj-btn" onclick="adjVal('resHpPct', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">힘</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resStrFlat', -1)">-</button><input type="number" id="resStrFlat" class="res-input"><button class="res-adj-btn" onclick="adjVal('resStrFlat', 1)">+</button></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">힘(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resStrPct', -1)">-</button><input type="number" id="resStrPct" class="res-input"><button class="res-adj-btn" onclick="adjVal('resStrPct', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">민첩</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resAgiFlat', -1)">-</button><input type="number" id="resAgiFlat" class="res-input"><button class="res-adj-btn" onclick="adjVal('resAgiFlat', 1)">+</button></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">민첩(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resAgiPct', -1)">-</button><input type="number" id="resAgiPct" class="res-input"><button class="res-adj-btn" onclick="adjVal('resAgiPct', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">생명력</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resVitFlat', -1)">-</button><input type="number" id="resVitFlat" class="res-input"><button class="res-adj-btn" onclick="adjVal('resVitFlat', 1)">+</button></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">생명력(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resVitPct', -1)">-</button><input type="number" id="resVitPct" class="res-input"><button class="res-adj-btn" onclick="adjVal('resVitPct', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">행운</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resLukFlat', -1)">-</button><input type="number" id="resLukFlat" class="res-input"><button class="res-adj-btn" onclick="adjVal('resLukFlat', 1)">+</button></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">행운(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resLukPct', -1)">-</button><input type="number" id="resLukPct" class="res-input"><button class="res-adj-btn" onclick="adjVal('resLukPct', 1)">+</button><span>%</span></div>
+                        </div>
                         
-                        <div class="result-item"><span class="result-label">스킬속도(%)</span><div class="edit-box"><input type="number" id="resSkillSpd" class="res-input"><span>%</span></div></div>
-                        <div class="result-item" style="display: none;"></div>
+                        <!-- 퍼센트 전용 스텟들 -->
+                        <div class="result-item"><span class="result-label">스킬 피해량(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resSkillDmg', -1)">-</button><input type="number" id="resSkillDmg" class="res-input"><button class="res-adj-btn" onclick="adjVal('resSkillDmg', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">최종 공격력(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resFinalAtk', -1)">-</button><input type="number" id="resFinalAtk" class="res-input"><button class="res-adj-btn" onclick="adjVal('resFinalAtk', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">치명타 확률(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resCritRate', -1)">-</button><input type="number" id="resCritRate" class="res-input"><button class="res-adj-btn" onclick="adjVal('resCritRate', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">치명타 공격력(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resCritDmg', -1)">-</button><input type="number" id="resCritDmg" class="res-input"><button class="res-adj-btn" onclick="adjVal('resCritDmg', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">경험치 획득량(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resExp', -1)">-</button><input type="number" id="resExp" class="res-input"><button class="res-adj-btn" onclick="adjVal('resExp', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">보스 공격력(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resBossDmg', -1)">-</button><input type="number" id="resBossDmg" class="res-input"><button class="res-adj-btn" onclick="adjVal('resBossDmg', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">드랍률(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resDrop', -1)">-</button><input type="number" id="resDrop" class="res-input"><button class="res-adj-btn" onclick="adjVal('resDrop', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">회피(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resEvasion', -1)">-</button><input type="number" id="resEvasion" class="res-input"><button class="res-adj-btn" onclick="adjVal('resEvasion', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">물약 회복량(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resPotion', -1)">-</button><input type="number" id="resPotion" class="res-input"><button class="res-adj-btn" onclick="adjVal('resPotion', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">저항(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resResist', -1)">-</button><input type="number" id="resResist" class="res-input"><button class="res-adj-btn" onclick="adjVal('resResist', 1)">+</button><span>%</span></div>
+                        </div>
+                        <div class="result-item"><span class="result-label">스킬속도(%)</span>
+                            <div class="edit-box"><button class="res-adj-btn" onclick="adjVal('resSkillSpd', -1)">-</button><input type="number" id="resSkillSpd" class="res-input"><button class="res-adj-btn" onclick="adjVal('resSkillSpd', 1)">+</button><span>%</span></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -361,6 +421,7 @@
     </div>
 </div>
 
+<!-- 🔥 동글동글한 이모티콘 플로팅 메뉴 -->
 <div class="floating-menu">
     <button class="float-btn theme" id="themeToggleBtnFloat" onclick="toggleTheme()">🌙<span class="tooltip">다크 모드</span></button>
     <button class="float-btn ocr" onclick="openOcrModal()">📷<span class="tooltip">스크린샷 인식</span></button>
@@ -368,6 +429,7 @@
     <button class="float-btn up" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">⬆️<span class="tooltip">위로 가기</span></button>
 </div>
 
+<!-- 💾 저장/불러오기 모달 -->
 <div id="saveModal" class="popup-backdrop">
   <div class="popup-box" style="max-width:460px;overflow:hidden">
     <button class="popup-close" onclick="closeSaveModal()">×</button>
@@ -376,11 +438,13 @@
       <span class="save-modal-title">저장 관리</span>
     </div>
     <div class="save-modal-body">
+      <!-- 프리셋 슬롯 -->
       <div class="save-group">
         <div class="save-group-label">프리셋 슬롯</div>
         <div style="display:grid;gap:6px" id="presetSlots"></div>
         <button onclick="resetAllPresets()" class="danger" style="padding:9px;font-size:11px;font-weight:800;border-radius:9px;margin-top:2px">🗑️ 프리셋 전체 초기화</button>
       </div>
+      <!-- 파일 저장/불러오기 -->
       <div class="save-group">
         <div class="save-group-label">파일</div>
         <div class="save-action-grid">
@@ -389,6 +453,7 @@
         </div>
         <input type="file" id="fileLoadInput" accept=".json" style="display:none" onchange="loadFromFile(event)">
       </div>
+      <!-- 코드 복사/붙여넣기 -->
       <div class="save-group">
         <div class="save-group-label">프로필 코드</div>
         <div class="save-action-grid">
@@ -400,6 +465,7 @@
   </div>
 </div>
 
+<!-- 📷 OCR 자동 인식 모달 -->
 <div id="ocrModal" class="popup-backdrop">
   <div class="popup-box" style="max-width:500px;">
     <button class="popup-close" onclick="closeOcrModal()">×</button>
@@ -428,7 +494,7 @@
 
 <script>
     // ═══════════════════════════════════════════════
-    // 테마 변경 스크립트 (아이콘 변경 대응)
+    // 테마 변경 스크립트
     // ═══════════════════════════════════════════════
     function toggleTheme() {
         const root = document.documentElement;
@@ -468,7 +534,42 @@
     
     window.ManualInputs = {}; 
     window.AnchorL = { str:0, agi:0, vit:0, luk:0, top:0, mid:0, bot:0 }; 
-    window.SystemAnchor = null; // 🔥 수동입력/OCR 시점의 장비,영단 스텟을 기억할 변수
+    window.SystemAnchor = null; 
+
+    // 🔥 실수로 누락했던 [+][-] 버튼 작동 함수 완벽 복구! 🔥
+    window.adjVal = function(id, amount) {
+        const el = document.getElementById(id);
+        if(!el) return;
+        
+        let currentVal = parseFloat(el.value) || 0;
+        let step = amount;
+        
+        // Shift 누르고 클릭하면 10씩 변화
+        if (window.event && window.event.shiftKey) {
+            step *= 10;
+        }
+        
+        let newVal = Number(Math.round((currentVal + step) + 'e2') + 'e-2');
+        el.value = newVal;
+
+        el.classList.add('is-manual');
+        window.ManualInputs[id] = newVal;
+        
+        // 현재 장비/영단 상태 스냅샷 저장
+        if(!window.SystemAnchor) window.SystemAnchor = getSystemStats();
+        
+        // 현재 기본 스텟 스냅샷 저장
+        window.AnchorL.str = parseInt(document.getElementById('strInput').value) || 0;
+        window.AnchorL.agi = parseInt(document.getElementById('agiInput').value) || 0;
+        window.AnchorL.vit = parseInt(document.getElementById('vitInput').value) || 0;
+        window.AnchorL.luk = parseInt(document.getElementById('lukInput').value) || 0;
+        window.AnchorL.top = parseInt(document.getElementById('topDanInput').value) || 0;
+        window.AnchorL.mid = parseInt(document.getElementById('midDanInput').value) || 0;
+        window.AnchorL.bot = parseInt(document.getElementById('botDanInput').value) || 0;
+
+        // 전투력 및 전체 스텟 다시 계산
+        calculateAll();
+    }
 
     const wEnhanceData=[{f:0,p:0,s:0},{f:3,p:0,s:0},{f:6,p:0,s:0},{f:9,p:0,s:1},{f:12,p:0,s:1},{f:15,p:0,s:1},{f:18,p:0,s:2},{f:21,p:0,s:2},{f:24,p:0,s:2},{f:27,p:0,s:3},{f:30,p:1,s:3},{f:33,p:1,s:3},{f:36,p:1,s:4},{f:39,p:1,s:4},{f:42,p:1,s:4},{f:45,p:2,s:5},{f:48,p:3,s:5},{f:51,p:3,s:5},{f:54,p:3,s:6},{f:57,p:3,s:6},{f:60,p:4,s:7}];
     const aEnhanceData=[{f:0,p:0,e:0},{f:1,p:0,e:0},{f:2,p:0,e:0},{f:3,p:1,e:0},{f:5,p:1,e:0},{f:7,p:1,e:0},{f:9,p:2,e:0},{f:12,p:2,e:0},{f:15,p:2,e:0},{f:18,p:3,e:0},{f:22,p:3,e:1},{f:26,p:3,e:1},{f:30,p:4,e:1},{f:35,p:4,e:1},{f:40,p:4,e:1},{f:45,p:5,e:1},{f:51,p:5,e:1},{f:57,p:5,e:1},{f:63,p:6,e:1},{f:70,p:6,e:1},{f:77,p:7,e:2}];
@@ -535,7 +636,7 @@
                 window.ManualInputs[this.id] = parseFloat(this.value) || 0;
                 
                 // OCR 또는 수동입력 시점의 장비/영단 상태 캡처
-                window.SystemAnchor = getSystemStats();
+                if(!window.SystemAnchor) window.SystemAnchor = getSystemStats();
                 
                 window.AnchorL.str = parseInt(document.getElementById('strInput').value) || 0;
                 window.AnchorL.agi = parseInt(document.getElementById('agiInput').value) || 0;
@@ -550,17 +651,6 @@
             el.addEventListener('keyup', function(e) { if (e.key === 'Enter') forceBlur(); });
         });
 
-        calculateAll();
-    }
-
-    function forceBlur() { if (document.activeElement && document.activeElement.tagName === 'INPUT') { document.activeElement.blur(); } }
-    function addStat(type, amount) { forceBlur(); const input = document.getElementById(type + 'Input'); input.value = (parseInt(input.value) || 0) + amount; calculateAll(); }
-    function resetStats() { forceBlur(); ['strInput', 'agiInput', 'vitInput', 'lukInput', 'topDanInput', 'midDanInput', 'botDanInput'].forEach(id => { document.getElementById(id).value = 0; }); calculateAll(); }
-
-    function clearManual() {
-        window.ManualInputs = {}; window.AnchorL = { str:0, agi:0, vit:0, luk:0, top:0, mid:0, bot:0 };
-        window.SystemAnchor = null; // 초기화
-        document.querySelectorAll('.res-input.is-manual').forEach(el => { el.classList.remove('is-manual'); el.value = ''; });
         calculateAll();
     }
 
@@ -769,22 +859,18 @@
             const val = parseFloat(input.value.trim());
             if (isNaN(val)) return;
 
-            // OCR 결과 적용 및 절대 베이스(ManualInputs)로 등록
             el.classList.add('is-manual');
             el.value = val;
             
-            if (elId === 'levelInput') {
-                // 레벨은 예외 처리
-            } else {
+            if (elId !== 'levelInput') {
                 window.ManualInputs[elId] = val;
             }
             count++;
         });
 
-        // 🔥 장비 누적 계산을 위해 OCR 시점의 순수 시스템 스텟(기본+장비+영단) 캡처
+        // 🔥 장비 누적 계산을 위해 OCR 시점의 순수 시스템 스텟 캡처
         window.SystemAnchor = getSystemStats();
 
-        // 앵커 스냅샷 찍기
         window.AnchorL.str = parseInt(document.getElementById('strInput').value) || 0;
         window.AnchorL.agi = parseInt(document.getElementById('agiInput').value) || 0;
         window.AnchorL.vit = parseInt(document.getElementById('vitInput').value) || 0;
@@ -806,18 +892,7 @@
     function getSystemStats() {
         let level = parseInt(document.getElementById('levelInput').value) || 1;
         const pVal = (id) => Math.max(0, Math.min(10, parseInt(document.getElementById('pill_' + id).value) || 0));
-        
-        let g = { 
-            strFlat:0, strPct:0, agiFlat:0, agiPct:0, vitFlat:0, vitPct:0, lukFlat:0, lukPct:0, 
-            atkFlat:0, atkPct:0, 
-            hpFlat: 50 + (level * 5), 
-            hpPct:0, 
-            critRate:0, 
-            critDmg:110, 
-            evasion:0, resist:0, potion:0, exp:0, 
-            drop:3, 
-            bossDmg:0, finalAtk:0, skillDmg:0, skillSpd:0 
-        };
+        let g = { strFlat:0, strPct:0, agiFlat:0, agiPct:0, vitFlat:0, vitPct:0, lukFlat:0, lukPct:0, atkFlat:0, atkPct:0, hpFlat:50+(level*5), hpPct:0, critRate:0, critDmg:110, evasion:0, resist:0, potion:0, exp:0, drop:3, bossDmg:0, finalAtk:0, skillDmg:0, skillSpd:0 };
 
         EQUIP_SLOT_NAMES.forEach(slot => {
             const eqId = document.getElementById('eq_' + slot + '_id').value; 
@@ -893,12 +968,11 @@
 
     function getFinalStats(CurrentL) {
         let G = getSystemStats(); 
-        let S = window.SystemAnchor || G; // 🔥 입력 시점 장비가 없으면 현재 장비를 베이스로 삼음 (차이 0)
+        let S = window.SystemAnchor || G;
         
         let f = {};
-        let B = {}; // 절대적인 베이스라인
+        let B = {};
         
-        // 🔥 입력된 수동 값 + (현재 장비 스텟 - 수동입력 당시의 장비 스텟)
         B.resStrPct = window.ManualInputs.resStrPct !== undefined ? window.ManualInputs.resStrPct + (G.strPct - S.strPct) : G.strPct;
         B.resAgiPct = window.ManualInputs.resAgiPct !== undefined ? window.ManualInputs.resAgiPct + (G.agiPct - S.agiPct) : G.agiPct;
         B.resVitPct = window.ManualInputs.resVitPct !== undefined ? window.ManualInputs.resVitPct + (G.vitPct - S.vitPct) : G.vitPct;
@@ -1054,8 +1128,6 @@
         fieldNames.forEach(id => {
             let el = document.getElementById(id);
             if (!el) return;
-            
-            // 🔥 수동 입력된 값은 입력칸에 직접적으로 표시
             if (document.activeElement !== el) el.value = Number(Math.round(curr[id] + 'e2') + 'e-2');
         });
 
